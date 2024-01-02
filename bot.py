@@ -5,12 +5,14 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from scraper_requests import ScraperRequests
 import datetime as d
+import pytz
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 NLINE = "\n"
 FMT = '%Y-%m-%d %H:%M:%S.%f'
+tz = pytz.timezone("Asia/Jakarta")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -25,7 +27,8 @@ scraper = ScraperRequests()
 
 def write_json(data):
     with open("data.json", "w") as f:
-        f.write(json.dumps({"time": str(data[0]), "data": data[1]}, indent=4))
+        f.write(json.dumps(
+            {"time": str(data[0]).replace("+07:00", ""), "data": data[1]}, indent=4))
 
 
 @bot.event
@@ -61,7 +64,7 @@ async def display_list_lowongan(context):
 async def update_list_lowongan(context):
     global data
     new_data = scraper.get_lowongan()
-    now = d.datetime.now(tz=d.timezone(d.timedelta(hours=7)))
+    now = tz.localize(d.datetime.now())
     if set(new_data) == set(data[1]):
         response = discord.Embed(
             title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
@@ -100,7 +103,7 @@ async def get_help(context):
 async def update_list_lowongan_1hr():
     global data
     new_data = scraper.get_lowongan()
-    now = d.datetime.now(tz=d.timezone(d.timedelta(hours=7)))
+    now = tz.localize(d.datetime.now())
     if set(new_data) == set(data[1]):
         response = discord.Embed(
             title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
