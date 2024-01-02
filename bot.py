@@ -61,7 +61,7 @@ async def display_list_lowongan(context):
 async def update_list_lowongan(context):
     global data
     new_data = scraper.get_lowongan()
-    now = d.datetime.now()
+    now = d.datetime.now(tz=d.timezone(d.timedelta(hours=7)))
     if set(new_data) == set(data[1]):
         response = discord.Embed(
             title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
@@ -100,7 +100,7 @@ async def get_help(context):
 async def update_list_lowongan_1hr():
     global data
     new_data = scraper.get_lowongan()
-    now = d.datetime.now()
+    now = d.datetime.now(tz=d.timezone(d.timedelta(hours=7)))
     if set(new_data) == set(data[1]):
         response = discord.Embed(
             title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
