@@ -3,7 +3,7 @@ import os
 import json
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from scraper import Scraper
+from scraper_requests import ScraperRequests
 import datetime as d
 
 load_dotenv()
@@ -20,7 +20,7 @@ with open('data.json', 'r') as f:
     data = (d.datetime.strptime(temp['time'], FMT), temp['data'])
 
 bot = commands.Bot(command_prefix="-", intents=intents)
-scraper = Scraper()
+scraper = ScraperRequests()
 
 
 def write_json(data):
@@ -39,11 +39,11 @@ async def on_ready():
         f'{bot.user} is connected to the following guild:\n'
         f'{guild.name} (id: {guild.id})'
     )
-    update_list_lowongan_2hr.start()
+    update_list_lowongan_1hr.start()
 
 
 @bot.command(name="display")
-async def display_list_lowongan(ctx):
+async def display_list_lowongan(context):
     global data
     now = data[0]
     list_lowongan = data[1]
@@ -54,11 +54,11 @@ async def display_list_lowongan(ctx):
             f"{NLINE.join(['• '+text.replace(chr(10), ' ') for text in list_lowongan])}"
         )
     )
-    await ctx.send(embed=response)
+    await context.send(embed=response)
 
 
 @bot.command(name="update")
-async def update_list_lowongan(ctx):
+async def update_list_lowongan(context):
     global data
     new_data = scraper.get_lowongan()
     now = d.datetime.now()
@@ -78,11 +78,11 @@ async def update_list_lowongan(ctx):
         )
     data = (now, new_data)
     write_json(data)
-    await ctx.send(embed=response)
+    await context.send(embed=response)
 
 
 @bot.command(name="h")
-async def get_help(ctx):
+async def get_help(context):
     response = discord.Embed(
         title="Bot usage",
         description=(
@@ -93,11 +93,11 @@ async def get_help(ctx):
             "update : Updates the lowongan list, displays the difference\n"
         )
     )
-    await ctx.send(embed=response)
+    await context.send(embed=response)
 
 
-@tasks.loop(hours=2)
-async def update_list_lowongan_2hr():
+@tasks.loop(hours=1)
+async def update_list_lowongan_1hr():
     global data
     new_data = scraper.get_lowongan()
     now = d.datetime.now()
