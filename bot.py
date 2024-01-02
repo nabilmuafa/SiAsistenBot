@@ -48,7 +48,7 @@ async def on_ready():
 @bot.command(name="display")
 async def display_list_lowongan(context):
     global data
-    now = data[0]
+    now = tz.localize(d.strptime(data[0]))
     list_lowongan = data[1]
     response = discord.Embed(
         title=f"Ingfo Loker (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
