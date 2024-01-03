@@ -47,15 +47,23 @@ async def on_ready():
 @bot.command(name="display")
 async def display_list_lowongan(context):
     global data
-    now = data[0]
-    list_lowongan = data[1]
-    response = discord.Embed(
-        title=f"Ingfo Loker (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
-        description=(
-            "List lowongan asdos yang buka:\n\n"
-            f"{NLINE.join(['• '+text.replace(chr(10), ' ') for text in list_lowongan])}"
+    if not data:
+        response = discord.Embed(
+            title=f"There's no lowongan data.",
+            description=(
+                "Update the data using command `-update`."
+            )
         )
-    )
+    else:
+        now = data[0]
+        list_lowongan = data[1]
+        response = discord.Embed(
+            title=f"Ingfo Loker (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
+            description=(
+                "List lowongan asdos yang buka:\n\n"
+                f"{NLINE.join(['• '+text.replace(chr(10), ' ') for text in list_lowongan])}"
+            )
+        )
     await context.send(embed=response)
 
 
@@ -64,19 +72,22 @@ async def update_list_lowongan(context):
     global data
     new_data = scraper.get_lowongan()
     now = d.datetime.now()
-    if set(new_data) == set(data[1]):
-        response = discord.Embed(
-            title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
-            description="Belum ada lowongan baru."
-        )
-    else:
-        new_data_only = list(set(new_data).difference(set(data[1])))
+    if not data or set(new_data) != set(data[1]):
+        if data:
+            new_data_only = list(set(new_data).difference(set(data[1])))
+        else:
+            new_data_only = new_data
         response = discord.Embed(
             title=f"Lowongan baru unlocked! (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
             description=(
                 "List lowongan baru yang telah buka:\n\n"
                 f"{NLINE.join(['• '+text.replace(chr(10), ' ') for text in new_data_only])}"
             )
+        )
+    else:
+        response = discord.Embed(
+            title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
+            description="Belum ada lowongan baru."
         )
     data = (now, new_data)
     write_json(data)
@@ -94,6 +105,18 @@ async def get_help(context):
             "display : Displays the current lowongan list (might be outdated)\n"
             "update : Updates the lowongan list, displays the difference\n"
         )
+    )
+    await context.send(embed=response)
+
+
+@bot.command(name="clear")
+async def clear_data(context):
+    global data
+    data = tuple()
+    if os.path.exists("data.json"):
+        os.remove("data.json")
+    response = discord.Embed(
+        title="Data cleared!"
     )
     await context.send(embed=response)
 
