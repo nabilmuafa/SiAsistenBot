@@ -16,9 +16,10 @@ FMT = '%Y-%m-%d %H:%M:%S.%f'
 intents = discord.Intents.default()
 intents.message_content = True
 data = tuple()
-with open('data.json', 'r') as f:
-    temp = json.load(f)
-    data = (d.datetime.strptime(temp['time'], FMT), temp['data'])
+if os.path.exists('data.json'):
+    with open('data.json', 'r') as f:
+        temp = json.load(f)
+        data = (d.datetime.strptime(temp['time'], FMT), temp['data'])
 
 bot = commands.Bot(command_prefix="-", intents=intents)
 scraper = ScraperRequests()
@@ -97,12 +98,20 @@ async def get_help(context):
     await context.send(embed=response)
 
 
-@tasks.loop(hours=1)
+@tasks.loop(minutes=30)
 async def update_list_lowongan_1hr():
     global data
     new_data = scraper.get_lowongan()
     now = d.datetime.now()
-    if set(new_data) == set(data[1]):
+    if not data:
+        response = discord.Embed(
+            title=f"Ingfo Loker (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
+            description=(
+                "List lowongan asdos yang buka:\n\n"
+                f"{NLINE.join(['• '+text.replace(chr(10), ' ') for text in new_data])}"
+            )
+        )
+    elif set(new_data) == set(data[1]):
         response = discord.Embed(
             title=f"Update (as of {now.strftime('%Y-%m-%d %H:%M:%S')})",
             description="Belum ada lowongan baru."

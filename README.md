@@ -2,6 +2,8 @@
 
 A simple Fasilkom UI's SiAsisten (TA system) scraper to give hourly updates on teaching assistant job vacancies, outputting its result via a Discord bot. Built using Python's `requests` for web interaction, `BeautifulSoup4` for parsing, and `discord.py` for the Discord bot. Uses `python-dotenv` as the environment variable manager.
 
+Uses commands with the prefix `-` to display and update the TA job vacancy list. Not only there are commands to display or update on demand, the program also automatically updates the TA job vacancy every 30 minutes by default.
+
 ## Bot Usage
 
 Prefix: `-`
