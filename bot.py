@@ -9,6 +9,7 @@ import datetime as d
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+CHANNEL = int(os.getenv('DISCORD_CHANNEL'))
 NLINE = "\n"
 FMT = '%Y-%m-%d %H:%M:%S.%f'
 
@@ -117,6 +118,6 @@ async def update_list_lowongan_1hr():
         )
     data = (now, new_data)
     write_json(data)
-    await bot.get_channel(1134015315211190283).send(embed=response)
+    await bot.get_channel(CHANNEL).send(embed=response)
 
 bot.run(TOKEN)
