@@ -75,4 +75,3 @@ Your Discord bot should be up and running!
 ## Known issues:
 
 - Time zones cannot be localized, will always display time zone according to the deployment device's time zone (if your system is UTC+0 but you're living in UTC+7, for example, the time displayed will still be in UTC+0).
-- The data management in `data.json` is still 'not the best', might improve it some time later
