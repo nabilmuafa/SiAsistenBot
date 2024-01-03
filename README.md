@@ -19,13 +19,13 @@ Here, I assume you have set up your Discord bot, has stored its token, and chose
 If you have, clone the repository to your local machine or virtual private server (preferred, as you can keep the bot running 24/7, even with your computer off):
 
 ```
-git clone https://github.com/pwndbg/pwndbg.git
+git clone https://github.com/nabilmuafa/SiAsistenBot.git
 ```
 
 Or, using SSH:
 
 ```
-git clone git@github.com:pwndbg/pwndbg.git
+git clone git@github.com:nabilmuafa/SiAsistenBot.git
 ```
 
 Then create a virtual environment using Python, also install the dependencies needed.
